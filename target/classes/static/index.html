@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>leaflet底图加载（底图类型、切换）</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" type="text/css" media="screen"
+          href="/lib/Flat-UI-master/dist/css/vendor/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/lib/leaflet/leaflet.css" />
+</head>
+
+<body>
+<nav class="navbar navbar-inverse navbar-embossed" role="navigation"
+     style="margin-bottom: 0; border-radius: 0; z-index: 2">
+    <div class="collapse navbar-collapse" id="navbar-collapse-01">
+        <ul class="nav navbar-nav navbar-left">
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                    高清地图
+                </a>
+            </li>
+        </ul>
+    </div>
+    <!-- /.navbar-collapse -->
+</nav>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-xs-12" id="mapDiv" style="position: absolute; top: 53px; bottom: 0; z-index: 1"></div>
+        <!-- 地图面板 -->
+        <!--底部状态栏部分 -->
+    </div>
+</div>
+</body>
+<script src="/lib/Flat-UI-master/dist/js/vendor/jquery.min.js"></script>
+<script src="/lib/Flat-UI-master/dist/js/flat-ui.js"></script>
+<script src="/lib/leaflet/leaflet.js"></script>
+<script src="/js/urlTemplate.js"></script>
+<script>
+    const map = L.map('mapDiv', {
+        crs: L.CRS.EPSG4326, //要使用的坐标参考系统，默认的坐标参考系，互联网地图主流坐标系
+        // crs: L.CRS.EPSG4326, //WGS 84坐标系，GPS默认坐标系
+        zoomControl: true,//是否显示缩放按钮控件
+        closePopupOnClick: true,//用户是否单击地图时关闭弹窗
+        // zoomDelta:1,//放大缩小时倍数
+        trackResize: true,//地图是否自动处理浏览器窗口调整大小,自动更新
+        // boxZoom:true,//是否可以在按住shift键的同时拖动鼠标将地图缩放到指定的矩形区域
+        // doubleClickZoom:true,//地图是否可以双击放大，按住shift双击缩小
+        // dragging:true,//地图是否可通过鼠标/触摸拖动
+        // minZoom: 1,//地图的最小缩放级别
+        // maxZoom: 18,//地图的最大缩放级别
+        attributionControl: false,//关闭右下角提示
+    }).setView([-2.8724420070811907,112.39822626113892, ], 18);//更新地图中心点,和缩放大小
+    // }).setView([24.556316109838303, 109.94435027296004], 18);//更新地图中心点,和缩放大小
+
+    let Baselayer = L.tileLayer.wms('http://localhost:8080/geoserver/gwc/service/wms', {
+        layers: 'test:GBSM',
+        format: 'image/png'
+    }).addTo(map);
+    console.log(Baselayer);
+
+    function onMapClick(e) {
+        L.popup().setLatLng(e.latlng)
+            .setContent('经纬度'+e.latlng.toString())
+            .openOn(map)
+    }
+    map.on('click',onMapClick);
+</script>
+</html>
